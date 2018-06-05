@@ -2,6 +2,7 @@ package models;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.zip.ZipFile;
 
 public class Task {
@@ -10,11 +11,21 @@ public class Task {
     private boolean completed;
     private LocalDateTime createdAt;
     private int id;
+    private int categoryId;
 
-    public Task(String description){
+    public Task(String description, int categoryId){
         this.description = description;
         this.completed = false;
         this.createdAt = LocalDateTime.now();
+        this.categoryId = categoryId;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getDescription() {
@@ -46,22 +57,18 @@ public class Task {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Task task = (Task) o;
-
-        if (completed != task.completed) return false;
-        if (id != task.id) return false;
-        return description != null ? description.equals(task.description) : task.description == null;
+        return getCompleted() == task.getCompleted() &&
+                getId() == task.getId() &&
+                getCategoryId() == task.getCategoryId() &&
+                Objects.equals(getDescription(), task.getDescription());
     }
 
     @Override
     public int hashCode() {
-        int result = description != null ? description.hashCode() : 0;
-        result = 31 * result + (completed ? 1 : 0);
-        result = 31 * result + id;
-        return result;
-    }
 
+        return Objects.hash(getDescription(), getCompleted(), getId(), getCategoryId());
+    }
 
     public static void clearAllTasks() {
 

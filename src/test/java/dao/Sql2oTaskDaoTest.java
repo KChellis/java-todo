@@ -28,7 +28,7 @@ public class Sql2oTaskDaoTest {
 
     @Test
     public void addingCourseSetsId() throws Exception {
-        Task task = new Task ("mow the lawn");
+        Task task = new Task ("mow the lawn", 1);
         int originalTaskId = task.getId();
         taskDao.add(task);
         assertNotEquals(originalTaskId, task.getId()); //how does this work?
@@ -36,7 +36,7 @@ public class Sql2oTaskDaoTest {
 
     @Test
     public void addedTasksAreReturnedFromgetAll() throws Exception {
-        Task task = new Task ("mow the lawn");
+        Task task = new Task ("mow the lawn", 1);
         taskDao.add(task);
         assertEquals(1, taskDao.getAll().size());
     }
@@ -49,17 +49,17 @@ public class Sql2oTaskDaoTest {
     @Test
     public void updateChangesTaskContent() throws Exception {
         String initialDescription = "mow the lawn";
-        Task task = new Task (initialDescription);
+        Task task = new Task (initialDescription, 1);
         taskDao.add(task);
 
-        taskDao.update(task.getId(), "brush the cat");
+        taskDao.update(task.getId(), "brush the cat", 1);
         Task updatedTask = taskDao.findById(task.getId());
         assertNotEquals(initialDescription, updatedTask.getDescription());
     }
 
     @Test
     public void deleteByIdDeletesCorrectTask() throws Exception {
-        Task task = new Task ("mow the lawn");
+        Task task = new Task ("mow the lawn", 1);
         taskDao.add(task);
         taskDao.deleteById(task.getId());
         assertEquals(0, taskDao.getAll().size());
@@ -68,13 +68,21 @@ public class Sql2oTaskDaoTest {
 
     @Test
     public void clearAllClearsAll() throws Exception {
-        Task task = new Task ("mow the lawn");
-        Task otherTask = new Task("brush the cat");
+        Task task = new Task ("mow the lawn", 1);
+        Task otherTask = new Task("brush the cat", 1);
         taskDao.add(task);
         taskDao.add(otherTask);
         int daoSize = taskDao.getAll().size();
         taskDao.clearAllTasks();
         assertTrue(daoSize > 0 && daoSize > taskDao.getAll().size()); //this is a little overcomplicated, but illustrates well how we might use `assertTrue` in a different way.
+    }
+
+    @Test
+    public void categoryIdIsReturnedCorrectly() throws Exception {
+        Task task = new Task ("mow the lawn", 1);
+        int originalCatId = task.getCategoryId();
+        taskDao.add(task);
+        assertEquals(originalCatId, taskDao.findById(task.getId()).getCategoryId());
     }
 
 
